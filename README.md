@@ -151,10 +151,30 @@ Sintel dataset:
 
 ### Relative Camera Pose Estimation
 
+dataset collection:
 
+- [ ] RealEstate10K (too big for now; TB level)
+- [x] Sintel
+- [ ] TUM-dynamics
+- [ ] ScanNetv2
+
+Sintel dataset:
+| model | ATE | RPE trans | RPE rot |
+| ----- | ------ | ---- | ----- |
+| original π3 | 0.0732 | 0.0390 | 0.2766 |
+| SVD-π3 (coming soon!) | ? | ? | ? |
 
 
 ### Point Map Estimation
+
+dataset collection:
+
+- [ ] 7-Scenes
+- [ ] Neural-NRGBD
+- [ ] DTU
+
+
+
 
 
 ## SVD-π3 Implementation Roadmap

@@ -208,8 +208,8 @@ class DataDownloader:
 if __name__ == "__main__":
     # setup_debug(True, 10033)
     MODE = "test"
-    RE10K_METAROOT = "data/re10k/metadata"
-    OUTPUT_ROOT = "data/re10k"
+    RE10K_METAROOT = "/data/wanghaoxuan/re10k/metadata"
+    OUTPUT_ROOT = "/data/wanghaoxuan/re10k"
     SEQUENCE_LIST_FILE = "datasets/sequences/re10k_test_1800.txt"
     TMP_DIR = osp.join(OUTPUT_ROOT, "tmp")
     
