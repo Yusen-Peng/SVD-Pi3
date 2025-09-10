@@ -115,3 +115,23 @@ CUDA_VISIBLE_DEVICES=0 python example.py --ckpt ./pi3_model.safetensors --effici
 ```
 
 <img src="Pi3-main/topk_cuda_ops.png" width=500 height=400></img>
+
+
+## SVD-π3 Implementation Roadmap
+
+- [ ] Truncation-Aware Data Whitening
+  - [ ] calibration dataset collection
+  - [ ] TBD
+- [ ] Finetuning with LoRA
+  - [ ] TBD
+
+
+## Evaluation
+
+### Monocular Depth Estimation
+
+### Video Depth Estimation
+
+### Relative Camera Pose Estimation
+
+### Point Map Estimation
