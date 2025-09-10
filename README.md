@@ -116,6 +116,46 @@ CUDA_VISIBLE_DEVICES=0 python example.py --ckpt ./pi3_model.safetensors --effici
 
 <img src="Pi3-main/topk_cuda_ops.png" width=500 height=400></img>
 
+## Evaluation
+
+### Monocular Depth Estimation
+
+dataset collection:
+
+- [x] Sintel
+- [ ] Bonn
+- [ ] KITTI
+- [ ] NYU-v2
+
+Sintel dataset:
+| model | Abs Rel | Sq Rel | RMSE | Log RMSE |
+| ----- | ------ | ---- | ----- | ------ |
+| original π3 | 0.2796 | 1.2767 | 3.7178 | 0.5286 | 
+| SVD-π3 (coming soon!) | ? | ? | ? | ? |
+
+### Video Depth Estimation
+
+dataset collection:
+
+- [x] Sintel
+- [ ] Bonn
+- [ ] KITTI
+- [ ] NYU-v2
+
+Sintel dataset:
+| model | Abs Rel | Sq Rel | RMSE | Log RMSE |
+| ----- | ------ | ---- | ----- | ------ |
+| original π3 | 0.2106 | 1.2873 | 4.0003 | 0.4840 | 
+| SVD-π3 (coming soon!) | ? | ? | ? | ? |
+
+
+### Relative Camera Pose Estimation
+
+
+
+
+### Point Map Estimation
+
 
 ## SVD-π3 Implementation Roadmap
 
@@ -124,14 +164,3 @@ CUDA_VISIBLE_DEVICES=0 python example.py --ckpt ./pi3_model.safetensors --effici
   - [ ] TBD
 - [ ] Finetuning with LoRA
   - [ ] TBD
-
-
-## Evaluation
-
-### Monocular Depth Estimation
-
-### Video Depth Estimation
-
-### Relative Camera Pose Estimation
-
-### Point Map Estimation

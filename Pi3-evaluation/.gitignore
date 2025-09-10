@@ -37,3 +37,4 @@ batchscript-*
 *.jpg
 *.so
 *.o
+/sintel/*

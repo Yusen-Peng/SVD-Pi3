@@ -7,12 +7,11 @@ name: videodepth
 
 pi3:
   pretrained_model_name_or_path: yyfz233/Pi3
-  # pretrained_model_name_or_path: checkpoints/Pi3
 
 eval_datasets:
   - sintel
-  - bonn
-  - kitti
+  # - bonn
+  # - kitti
 
 # align: scale
 align: scale&shift
