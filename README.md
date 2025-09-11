@@ -189,13 +189,11 @@ dataset collection:
 | SVD-π3 (coming soon!) | ? | ? | ? | ?  | ? | ? |  ? |  ? |  ? | ? |  
 
 
-## 🔥 SVD-π3 Implementation Roadmap 🔥
+## 🔥 SVD-π3 Implementatin Roadmap 🔥
 
 - [ ] Whitening only (no updates)
-  - [ ] collect calibration data
-    - [ ] TBD
-    - [ ] TBD
-    - [ ] TBD
+  - [x] collect calibration data
+    - [x] sintel_training_ALLMODS_512_224_8_10_3.pt (64 batches, 512 images)
   - [ ] derive the whitening matrix via profiling
     - [ ] TBD
     - [ ] TBD
@@ -210,3 +208,7 @@ dataset collection:
   - [ ] performance/accuracy evaluation
 
   - [ ] efficiency evaluation
+
+```bash
+CUDA_VISIBILE_DEVICES=0 python Pi3_main/SVDPi3.py --step 1 --ckpt Pi3_main/pi3_model.safetensors --save_path Pi3_main
+```

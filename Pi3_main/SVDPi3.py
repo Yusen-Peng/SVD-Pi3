@@ -23,6 +23,7 @@ from pi3.utils.basic import load_images_as_tensor, write_ply
 from pi3.utils.geometry import depth_edge
 from pi3.models.pi3 import Pi3
 from SVD_LLM.utils.data_utils import *
+from SVD_LLM.utils.peft import PeftModel
 from SVD_LLM.component.svd_llama import SVD_LlamaAttention, SVD_LlamaMLP
 from SVD_LLM.component.svd_mistral import SVD_MistralAttention, SVD_MistralMLP
 from SVD_LLM.component.svd_opt import SVDOPTDecoderLayer
@@ -730,7 +731,7 @@ def main():
     parser.add_argument('--model_path', type=str, default=None, help='local compressed model path or whitening information path')
     parser.add_argument('--run_low_resource', action='store_true', help='whether to run whitening in low resource, exp, compress LLaMA-7B below 15G gpu')
     parser.add_argument('--dataset', type=str, default='wikitext2',help='Where to extract calibration data from [wikitext2, ptb, c4]')
-    parser.add_argument('--whitening_nsamples', type=int, default=256, help='Number of calibration data samples for whitening.')
+    parser.add_argument('--whitening_nsamples', type=int, default=512, help='Number of calibration data samples for whitening.')
     parser.add_argument('--updating_nsamples', type=int, default=16, help='Number of calibration data samples for udpating.')
     parser.add_argument('--save_path', type=str, default=None, help='the path to save the compressed model checkpoints.`')
     parser.add_argument('--seed',type=int, default=0, help='Seed for sampling the calibration data')
@@ -744,6 +745,8 @@ def main():
     parser.add_argument("--ckpt", type=str, default=None, help="Path to the model checkpoint file. Default: None")
     parser.add_argument('--ratio', type=float, default=0.2, help='Target compression ratio,(0,1), default=0.2, means only keeping about 20% of the params.')
     parser.add_argument("--device", type=str, default='cuda', help="Device to run inference on ('cuda' or 'cpu'). Default: 'cuda'")
+    parser.add_argument("--calibration_dataset_path", type=str, default="/data/wanghaoxuan/sintel", help="Path to the calibration dataset.")
+
     args = parser.parse_args()
     args.ratio = 1- args.ratio
 
@@ -752,6 +755,7 @@ def main():
         """
             Whitening only (no updates)
         """
+        
         print(f'Whitening only (no updates) with sampling interval: {args.interval}')
         device = torch.device(args.device)
         if args.ckpt is not None:
@@ -767,20 +771,26 @@ def main():
 
         model = model.eval()
         print("✅ model loaded.")
-        #print(f"save path: {args.save_path}")
-
 
         # TODO: collect calibration data
-        cali_white_data = Pi3_get_calib_train_data(args.dataset, args.whitening_nsamples, seqlen=args.model_seq_len)
-        
-        # TODO: derive the whitening matrix via profiling
-        profiling_mat = Pi3_profile_svdllm_low_resource(model, cali_white_data, args.DEV)
+        print("Start collecting calibration data...")
+        cali_white_data = Pi3_get_calib_train_data(
+            root=args.calibration_dataset_path,
+            nsamples=args.whitening_nsamples
+        )
 
-        # TODO: apply whitening
-        Pi3_whitening(args.model, model, profiling_mat, args.ratio, args.DEV)
+        print(f"✅ collected {len(cali_white_data)} calibration batches (~{sum(b['pixel_values'].shape[0] for b in cali_white_data)} images).")
 
-        # save the model
-        torch.save({'model': model}, args.save_path + "/" + args.model.replace("/", "_").replace("-", "_") +'_whitening_only_' + str(args.ratio) + '.pt')
+
+
+        # # TODO: derive the whitening matrix via profiling
+        # profiling_mat = Pi3_profile_svdllm_low_resource(model, cali_white_data, args.DEV)
+
+        # # TODO: apply whitening
+        # Pi3_whitening(args.model, model, profiling_mat, args.ratio, args.DEV)
+
+        # # save the model
+        # torch.save({'model': model}, args.save_path + "/" + args.model.replace("/", "_").replace("-", "_") +'_whitening_only_' + str(args.ratio) + '.pt')
     
     
     
@@ -832,7 +842,6 @@ def main():
         else:
             model, tokenizer = get_model_from_local(args.model_path)
             if args.lora is not None:
-                from utils.peft import PeftModel
                 model = PeftModel.from_pretrained(
                     model,
                     args.lora,

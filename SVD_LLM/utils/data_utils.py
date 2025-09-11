@@ -2,12 +2,145 @@ import os
 import random
 import torch
 import sys
+import glob
+from typing import List, Dict, Optional
+from PIL import Image
+from torchvision import transforms
 from datasets import load_dataset
 from torch.utils.data.dataset import Dataset
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 parent_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(current_path)
+IMG_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".tiff")
+
+RGB_MODALITIES = ["albedo", "camdata_left", "clean", "final", "depth_viz", "flow_viz"]
+# # TODO: explore all modalities later...
+# SINTEL_MODALITIES = ["albedo", "camdata_left", "clean", "depth", "depth_viz", "final", "flow", "flow_viz", "invalid", "occlusions"]
+
+
+def collect_sintel_frames(root: str, split: str, folder: str) -> List[str]:
+    """Return list of frame paths under e.g. training/clean/alley_1/*.png."""
+    fdir = os.path.join(root, split, folder)
+    frames = []
+    if not os.path.isdir(fdir):
+        return frames
+    for scene in sorted(os.listdir(fdir)):
+        scene_dir = os.path.join(fdir, scene)
+        if not os.path.isdir(scene_dir):
+            continue
+        for fn in sorted(os.listdir(scene_dir)):
+            if fn.lower().endswith(IMG_EXTS):
+                frames.append(os.path.join(scene_dir, fn))
+    return frames
+
+def build_transform(image_size: int = 224, center_crop: bool = True):
+    tr = [transforms.Resize(image_size, interpolation=transforms.InterpolationMode.BICUBIC)]
+    if center_crop:
+        tr.append(transforms.CenterCrop(image_size))
+    tr += [
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                             std=[0.229, 0.224, 0.225]),
+    ]
+    return transforms.Compose(tr)
+
+
+def Pi3_get_calib_train_data(
+    root: str,
+    nsamples: int = 256,
+    batch_size: int = 8,
+    image_size: int = 224,
+    sampling_stride: int = 10,
+    split: str = "training",
+    seed: int = 3,
+    cache_dir: str = "/data/wanghaoxuan/SVD_Pi3_cache",
+) -> List[Dict[str, torch.Tensor]]:
+    os.makedirs(cache_dir, exist_ok=True)
+    cache_file = os.path.join(
+        cache_dir,
+        f"sintel_{split}_ALLMODS_{nsamples}_{image_size}_{batch_size}_{sampling_stride}_{seed}.pt"
+    )
+    if os.path.exists(cache_file):
+        return torch.load(cache_file)
+
+    random.seed(seed)
+    torch.manual_seed(seed)
+
+    # collect strided frames per modality
+    frames_per_mod = {}
+    for mod in RGB_MODALITIES:
+        frames = collect_sintel_frames(root, split, mod)
+        strided = frames[::max(1, sampling_stride)] or frames
+        frames_per_mod[mod] = strided
+
+    # allocate samples evenly (roughly) across modalities
+    base = nsamples // len(RGB_MODALITIES)
+    rem = nsamples % len(RGB_MODALITIES)
+    per_mod_quota = {m: base + (i < rem) for i, m in enumerate(RGB_MODALITIES)}
+
+    # sample frames per modality, with replacement if needed
+    # sample frames per modality with exact-size guarantee
+    chosen = []
+    leftovers = []   # unused frames to backfill from
+    deficit = 0
+
+    for mod in RGB_MODALITIES:
+        pool = frames_per_mod[mod]
+        q = per_mod_quota[mod]
+
+        if not pool:
+            deficit += q
+            continue
+
+        if len(pool) >= q:
+            picks = random.sample(pool, q)        # unique picks from this modality
+            chosen.extend(picks)
+            # keep remaining frames for possible backfill
+            leftovers.extend([p for p in pool if p not in picks])
+        else:
+            # take all we have, note how many we still owe
+            chosen.extend(pool)
+            deficit += (q - len(pool))
+            # no leftovers from this modality (exhausted)
+
+    # backfill any shortfall from leftovers; if still short, from all frames
+    if len(chosen) < nsamples:
+        global_pool = leftovers if leftovers else sum(frames_per_mod.values(), [])
+        while len(chosen) < nsamples and global_pool:
+            chosen.append(random.choice(global_pool))
+
+    # safety cap (shouldn’t trigger unless quotas changed upstream)
+    if len(chosen) > nsamples:
+        chosen = random.sample(chosen, nsamples)
+
+    # NOTE: avoid modality clumping in batches
+    random.shuffle(chosen)
+
+    # image preprocessing + batching
+    to_tensor = build_transform(image_size=image_size, center_crop=True)
+    traindataset: List[Dict[str, torch.Tensor]] = []
+    batch_imgs: Optional[List[torch.Tensor]] = None
+    for idx, path in enumerate(chosen):
+        x = to_tensor(Image.open(path).convert("RGB"))
+        if batch_imgs is None:
+            batch_imgs = []
+        batch_imgs.append(x)
+
+        full = (len(batch_imgs) == batch_size)
+        last = (idx == len(chosen) - 1)
+        if full or last:
+            pixel_values = torch.stack(batch_imgs, dim=0)
+            traindataset.append({"pixel_values": pixel_values})
+            batch_imgs = None
+
+    torch.save(traindataset, cache_file)
+    return traindataset
+
+
+
+
+############################### BELOW ARE FROM SVD-LLM repo #####################################
 
 def get_calib_train_data(name, tokenizer, nsamples, seqlen=2048, seed=3, batch_size=1, dataset_cache_dir=None):
     import random
@@ -51,14 +184,7 @@ def get_calib_train_data(name, tokenizer, nsamples, seqlen=2048, seed=3, batch_s
     return traindataset
 
 
-def Pi3_get_calib_train_data(dataset_name, whitening_nsamples, seqlen):
-    raise NotImplementedError()
 
-
-
-
-
-############################### BELOW ARE FROM SVD-LLM repo #####################################
 def get_wikitext2(nsamples, seed, seqlen, tokenizer, dataset_cache_dir=None):
     traindata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train', cache_dir=dataset_cache_dir)
     testdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='test', cache_dir=dataset_cache_dir)
