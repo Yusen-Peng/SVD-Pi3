@@ -1,4 +1,5 @@
 #coding:utf8
+from typing import OrderedDict
 import warnings
 warnings.filterwarnings("ignore", message=".*RoPE2D.*")
 warnings.filterwarnings("ignore", message=".*version instead.*")
@@ -12,6 +13,7 @@ if parent_path not in sys.path:
     sys.path.insert(0, parent_path)
 
 import pandas as pd
+from contextlib import nullcontext
 import argparse
 import plotly.express as px
 from safetensors.torch import load_file
@@ -22,6 +24,7 @@ import csv
 from pi3.utils.basic import load_images_as_tensor, write_ply
 from pi3.utils.geometry import depth_edge
 from pi3.models.pi3 import Pi3
+from pi3.models.layers.block import BlockRope
 from SVD_LLM.utils.data_utils import *
 from SVD_LLM.utils.peft import PeftModel
 from SVD_LLM.component.svd_llama import SVD_LlamaAttention, SVD_LlamaMLP
@@ -293,7 +296,6 @@ def profle_svdllm(name, model, calib_loader, dev):
             torch.cuda.empty_cache()
         profiling_mat[i] = layer_profile
     return profiling_mat
-        
 
 @torch.no_grad()
 def profle_svdllm_low_resource(model_name, model, calib_loader, dev):
@@ -400,8 +402,143 @@ def profle_svdllm_low_resource(model_name, model, calib_loader, dev):
         torch.cuda.empty_cache()
     return profiling_mat
 
-def Pi3_profile_svdllm_low_resource(model, cali_white_data, device):
-    raise NotImplementedError()
+
+@torch.no_grad()
+def Pi3_profile_svdllm_low_resource(
+    model: nn.Module,
+    calib_batches: List[Dict[str, torch.Tensor]],
+    device: torch.device,
+    autocast: bool = True,
+    dtype: torch.dtype = torch.float16,
+    eps: float = 1e-6,
+) -> Dict[str, torch.Tensor]:
+    """
+    Stream calibration data through Pi3 and compute per-module whitening factors.
+
+    Returns
+    -------
+    profiling_mat: Dict[str, Tensor]
+        Maps module_key -> Cholesky factor L of covariance (so that Cov ≈ L @ L^T).
+    """
+    model.eval().to(device)
+
+    # choose targets (attention linear layers and MLP linear layers)
+    targets = OrderedDict()
+    # Pi3.decoder is nn.ModuleList[BlockRope]
+    for i, blk in enumerate(model.decoder):
+        blk: BlockRope = blk # type check
+        # attention
+        if hasattr(blk, "attn"):
+            attn = blk.attn
+            if hasattr(attn, "qkv") and isinstance(attn.qkv, nn.Linear):
+                targets[f"decoder.{i}.attn.qkv"] = attn.qkv
+            if hasattr(attn, "proj") and isinstance(attn.proj, nn.Linear):
+                targets[f"decoder.{i}.attn.proj"] = attn.proj
+        # mlp (ffn)
+        if hasattr(blk, "mlp"):
+            mlp = blk.mlp
+            if hasattr(mlp, "fc1") and isinstance(mlp.fc1, nn.Linear):
+                targets[f"decoder.{i}.mlp.fc1"] = mlp.fc1
+            if hasattr(mlp, "fc2") and isinstance(mlp.fc2, nn.Linear):
+                targets[f"decoder.{i}.mlp.fc2"] = mlp.fc2
+    
+    print(f"✅Found {len(targets)} Linear targets in Pi3.decoder to whiten")
+
+    # initialize per-module accumulators
+    # G = X^T * X, N = total rows collected
+    grams: Dict[str, torch.Tensor] = {}
+    counts: Dict[str, int] = {}
+    for k, lin in targets.items():
+        in_dim = lin.in_features
+        grams[k] = torch.zeros((in_dim, in_dim), dtype=torch.float64, device=device)
+        counts[k] = 0
+
+    # define hooks to collect statistics during the calibration forward passes
+    handles = []
+    def make_pre_hook(key: str):
+        def _hook(module: nn.Linear, inp):
+            # inp is a tuple; grab first
+            x = inp[0]
+            # expected shapes: (..., in_features)
+            x = x.detach()
+            # collapse all leading dims to rows
+            x = x.reshape(-1, x.shape[-1]).to(device, dtype=torch.float32)
+            # center? (optional) — for calibration whitening, uncentered is okay
+            G = x.T @ x   # (in_features, in_features) in float32
+            grams[key] += G.to(torch.float64)
+            counts[key] += x.shape[0]
+        return _hook
+
+    for key, lin in targets.items():
+        lin: nn.Linear = lin  # type check
+        handles.append(lin.register_forward_pre_hook(make_pre_hook(key)))
+    print(f"✅Registered {len(handles)} forward hooks!")
+
+
+    # run forward streaming through batches
+    amp_ctx = (
+        torch.amp.autocast(device_type="cuda", dtype=dtype) if (autocast and device.type == "cuda")
+        else nullcontext()
+    )
+
+    for b in tqdm(calib_batches):
+        imgs = b["pixel_values"].to(device)
+        # Pi3.forward expects (B, N, C, H, W). Our sampler returns (B, C, H, W).
+        # Use N=1.
+        imgs = imgs.unsqueeze(1)
+
+        with amp_ctx:
+            # here, PyTorch automatically invokes every registered forward_pre_hook
+            _ = model(imgs)
+    print(f"✅Completed streaming {len(calib_batches)} calibration batches")
+
+    # remove hooks
+    for h in handles:
+        h.remove()
+    print(f"✅Removed all {len(handles)} forward hooks")
+    torch.cuda.synchronize(device) if device.type == "cuda" else None
+
+    # build whitening matrices
+    profiling_mat: Dict[str, torch.Tensor] = {}
+
+    num_modules = len(targets)
+    print(f"Building {num_modules} Cholesky factors (on CPU)...")
+    fail_case = 0
+
+    for key in targets.keys():
+        n = max(1, counts[key])
+
+        # 1) CPU float64 & symmetrize
+        cov = (grams[key] / n).to(torch.float64).cpu()
+        cov = 0.5 * (cov + cov.T)
+
+        d = cov.shape[0]
+        I = torch.eye(d, dtype=cov.dtype, device=cov.device)
+
+        # scale-aware base shrinkage (Ledoit-Wolf style tiny alpha)
+        mu = float(cov.trace() / max(1, d))
+        base_eps = 1e-6 * max(1.0, mu)   # adapt to magnitude
+        cov_j = cov + base_eps * I
+
+        # 2) try Cholesky on CPU
+        try:
+            L = torch.linalg.cholesky(cov_j)
+        except Exception:
+            fail_case += 1
+            evals, Q = torch.linalg.eigh(cov)  # CPU, float64, symmetric
+            lam = torch.clamp(evals, min=base_eps)
+            L = Q @ torch.diag(torch.sqrt(lam))
+
+        profiling_mat[key] = L  # keep on CPU to save VRAM
+
+    print(f"✅{num_modules - fail_case}/{num_modules} succeeded with Cholesky, {fail_case}/{num_modules} used EVD fallback")
+
+    # clean up
+    for k in grams:
+        grams[k] = None
+    torch.cuda.empty_cache()
+
+    return profiling_mat
 
  
 @torch.no_grad()
@@ -755,7 +892,7 @@ def main():
         """
             Whitening only (no updates)
         """
-        
+
         print(f'Whitening only (no updates) with sampling interval: {args.interval}')
         device = torch.device(args.device)
         if args.ckpt is not None:
@@ -772,19 +909,19 @@ def main():
         model = model.eval()
         print("✅ model loaded.")
 
-        # TODO: collect calibration data
+        # collect calibration data
         print("Start collecting calibration data...")
         cali_white_data = Pi3_get_calib_train_data(
             root=args.calibration_dataset_path,
             nsamples=args.whitening_nsamples
         )
-
         print(f"✅ collected {len(cali_white_data)} calibration batches (~{sum(b['pixel_values'].shape[0] for b in cali_white_data)} images).")
 
+        # derive the whitening matrix via profiling
+        profiling_mat = Pi3_profile_svdllm_low_resource(model, cali_white_data, device, autocast=True, dtype=torch.float16, eps=1e-6)
 
 
-        # # TODO: derive the whitening matrix via profiling
-        # profiling_mat = Pi3_profile_svdllm_low_resource(model, cali_white_data, args.DEV)
+
 
         # # TODO: apply whitening
         # Pi3_whitening(args.model, model, profiling_mat, args.ratio, args.DEV)

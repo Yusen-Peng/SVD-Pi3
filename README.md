@@ -114,7 +114,7 @@ detailed profiling:
 CUDA_VISIBLE_DEVICES=0 python example.py --ckpt ./pi3_model.safetensors --efficiency_measure profiler
 ```
 
-<img src="Pi3-main/topk_cuda_ops.png" width=500 height=400></img>
+<img src="Pi3_main/topk_cuda_ops.png" width=500 height=400></img>
 
 ## Evaluation
 
@@ -194,10 +194,9 @@ dataset collection:
 - [ ] Whitening only (no updates)
   - [x] collect calibration data
     - [x] sintel_training_ALLMODS_512_224_8_10_3.pt (64 batches, 512 images)
-  - [ ] derive the whitening matrix via profiling
-    - [ ] TBD
-    - [ ] TBD
-    - [ ] TBD
+  - [ ] derive the whitening matrix via profiling 
+    - [x] fallback to EVD when Cholesky fails
+    - [x] example: "✅95/144 succeeded with Cholesky, 49/144 used EVD fallback"
   - [ ] apply whitening
     - [ ] TBD
     - [ ] TBD
