@@ -2,17 +2,37 @@
 
 ## SVD-LLM
 
-Motivation: in ASVD, truncating the smallest singular values **does not guarantee** minimal loss, hence we want to achieve a **direct mapping** between singular values and compression loss.
-
-![alt text](docs/comparison.png)
-
-Instead of a simple/naive **scaling matrix** illustrated in [ASVD](docs/ASVD_2.png), we can use a **whitening matrix** $S$ 
+Motivation: in ASVD, truncating the smallest singular values **does not guarantee** minimal loss, hence we want to achieve a **direct mapping** between singular values and compression loss. Instead of a simple/naive **scaling matrix** illustrated in [ASVD](docs/ASVD_2.png), we can use a **whitening matrix** $S$:
 
 ![alt text](docs/SVD-LLM.png)
 
 this **whitening matrix** is computed such that it satisfies the following property:
 
 ![alt text](docs/whitening.png)
+
+## 🔥 SVD-π3 Implementatin Roadmap
+
+- [x] Whitening only (no updates)
+  - [x] collect calibration data
+    - [x] sintel_training_ALLMODS_512_224_8_10_3.pt (64 batches, 512 images)
+  - [x] derive the whitening matrix via profiling 
+    - [x] fallback to EVD when Cholesky fails ("✅95/144 succeeded with Cholesky, 49/144 used EVD fallback")
+  - [x] apply whitening
+    - [x] SVD_Pi3Attention
+    - [x] SVD_Pi3MLP
+    - [x] Pi3_whitening
+      - [x] hierarchical attempts on SVD (float32 GPU -> float64 GPU -> float64 CPU)
+- [ ] Whitening + local update (light finetune)
+- [ ] Local update only (no whitening)
+- [ ] evaluation
+  - [ ] performance/accuracy evaluation
+
+  - [ ] efficiency evaluation
+
+
+```bash
+CUDA_VISIBILE_DEVICES=0 python Pi3_main/SVDPi3.py --step 1 --ckpt Pi3_main/pi3_model.safetensors --save_path Pi3_main
+```
 
 ## SVD-LLM preliminaries
 
@@ -187,27 +207,3 @@ dataset collection:
 | ----- | -------- | ------- | --------- | -------- | ------- | ------ | -------- | ------- | -------- | ------- | 
 | original π3 | 0.0469 | 0.0284 | 0.0736 | 0.0484 | 0.7413 | 0.8402 | 0.7446 | 0.8427 | 0.7379 | 0.8378 |
 | SVD-π3 (coming soon!) | ? | ? | ? | ?  | ? | ? |  ? |  ? |  ? | ? |  
-
-
-## 🔥 SVD-π3 Implementatin Roadmap
-
-- [x] Whitening only (no updates)
-  - [x] collect calibration data
-    - [x] sintel_training_ALLMODS_512_224_8_10_3.pt (64 batches, 512 images)
-  - [x] derive the whitening matrix via profiling 
-    - [x] fallback to EVD when Cholesky fails ("✅95/144 succeeded with Cholesky, 49/144 used EVD fallback")
-  - [x] apply whitening
-    - [x] SVD_Pi3Attention
-    - [x] SVD_Pi3MLP
-    - [x] Pi3_whitening
-      - [x] hierarchical attempts on SVD (float32 GPU -> float64 GPU -> float64 CPU)
-- [ ] Whitening + local update (light finetune)
-- [ ] Local update only (no whitening)
-- [ ] evaluation
-  - [ ] performance/accuracy evaluation
-
-  - [ ] efficiency evaluation
-
-```bash
-CUDA_VISIBILE_DEVICES=0 python Pi3_main/SVDPi3.py --step 1 --ckpt Pi3_main/pi3_model.safetensors --save_path Pi3_main
-```
