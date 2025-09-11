@@ -2,7 +2,7 @@
   cfg:
     _target_: datasets.sevenscenes.SevenScenes
     split: test
-    SEVENSCENES_DIR: data/7scenes
+    SEVENSCENES_DIR: /data/wanghaoxuan/7scenes
     load_img_size: ${load_img_size}
     cache_file: data/dataset_cache/7scenes_mv_recon_cache.npy
   sampling:
@@ -14,7 +14,7 @@
   cfg:
     _target_: datasets.sevenscenes.SevenScenes
     split: test
-    SEVENSCENES_DIR: data/7scenes
+    SEVENSCENES_DIR: /data/wanghaoxuan/7scenes
     load_img_size: ${load_img_size}
     cache_file: data/dataset_cache/7scenes_mv_recon_cache.npy
   sampling:

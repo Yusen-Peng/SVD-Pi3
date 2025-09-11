@@ -51,6 +51,9 @@ def get_calib_train_data(name, tokenizer, nsamples, seqlen=2048, seed=3, batch_s
     return traindataset
 
 
+def Pi3_get_calib_train_data(dataset_name, whitening_nsamples, seqlen):
+    raise NotImplementedError()
+
 
 def get_wikitext2(nsamples, seed, seqlen, tokenizer, dataset_cache_dir=None):
     traindata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train', cache_dir=dataset_cache_dir)

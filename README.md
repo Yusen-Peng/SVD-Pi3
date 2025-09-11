@@ -170,17 +170,34 @@ Sintel dataset:
 dataset collection:
 
 - [ ] 7-Scenes
+  - [x] preprocessing (running overnight)
 - [ ] Neural-NRGBD
 - [ ] DTU
 
+7-scenes dataset:
+| model | ATE | RPE trans | RPE rot |
+| ----- | ------ | ---- | ----- |
+| original π3 | ? | ? | ? |
+| SVD-π3 (coming soon!) | ? | ? | ? |
 
+## 🔥 SVD-π3 Implementation Roadmap 🔥
 
+- [ ] Whitening only (no updates)
+  - [ ] collect calibration data
+    - [ ] TBD
+    - [ ] TBD
+    - [ ] TBD
+  - [ ] derive the whitening matrix via profiling
+    - [ ] TBD
+    - [ ] TBD
+    - [ ] TBD
+  - [ ] apply whitening
+    - [ ] TBD
+    - [ ] TBD
+    - [ ] TBD
+- [ ] Whitening + local update (light finetune)
+- [ ] Local update only (no whitening)
+- [ ] evaluation
+  - [ ] performance/accuracy evaluation
 
-
-## SVD-π3 Implementation Roadmap
-
-- [ ] Truncation-Aware Data Whitening
-  - [ ] calibration dataset collection
-  - [ ] TBD
-- [ ] Finetuning with LoRA
-  - [ ] TBD
+  - [ ] efficiency evaluation

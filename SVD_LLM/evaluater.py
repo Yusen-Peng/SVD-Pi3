@@ -3,7 +3,7 @@ import numpy as np
 from tqdm import tqdm
 import time
 import itertools
-from utils.data_utils import get_test_data
+from SVD_LLM.utils.data_utils import get_test_data
 import os
 import sys
 

@@ -1,0 +1,297 @@
+{
+  "best_metric": 1.1688684225082397,
+  "best_model_checkpoint": "./second_half/checkpoint-400",
+  "epoch": 0.03215434083601286,
+  "eval_steps": 100,
+  "global_step": 400,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 0.0,
+      "learning_rate": 1.0000000000000002e-06,
+      "loss": 0.8189,
+      "step": 1
+    },
+    {
+      "epoch": 0.0,
+      "learning_rate": 1e-05,
+      "loss": 1.0677,
+      "step": 10
+    },
+    {
+      "epoch": 0.0,
+      "learning_rate": 2e-05,
+      "loss": 1.1009,
+      "step": 20
+    },
+    {
+      "epoch": 0.0,
+      "learning_rate": 2.9e-05,
+      "loss": 1.0047,
+      "step": 30
+    },
+    {
+      "epoch": 0.0,
+      "learning_rate": 3.9000000000000006e-05,
+      "loss": 0.9419,
+      "step": 40
+    },
+    {
+      "epoch": 0.0,
+      "learning_rate": 4.8e-05,
+      "loss": 0.8497,
+      "step": 50
+    },
+    {
+      "epoch": 0.0,
+      "learning_rate": 5.8e-05,
+      "loss": 1.0338,
+      "step": 60
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 6.800000000000001e-05,
+      "loss": 1.0203,
+      "step": 70
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 7.800000000000001e-05,
+      "loss": 1.0412,
+      "step": 80
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 8.800000000000001e-05,
+      "loss": 0.9666,
+      "step": 90
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.8e-05,
+      "loss": 0.8839,
+      "step": 100
+    },
+    {
+      "epoch": 0.01,
+      "eval_yahma/alpaca-cleaned_loss": 1.1266037225723267,
+      "eval_yahma/alpaca-cleaned_runtime": 994.158,
+      "eval_yahma/alpaca-cleaned_samples_per_second": 2.012,
+      "eval_yahma/alpaca-cleaned_steps_per_second": 0.251,
+      "step": 100
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.99785061794734e-05,
+      "loss": 1.0358,
+      "step": 110
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.995163890381515e-05,
+      "loss": 1.129,
+      "step": 120
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.99247716281569e-05,
+      "loss": 1.1366,
+      "step": 130
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.989790435249866e-05,
+      "loss": 1.0173,
+      "step": 140
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.987103707684041e-05,
+      "loss": 0.8069,
+      "step": 150
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.984416980118216e-05,
+      "loss": 1.0587,
+      "step": 160
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.981730252552392e-05,
+      "loss": 1.1665,
+      "step": 170
+    },
+    {
+      "epoch": 0.01,
+      "learning_rate": 9.979043524986567e-05,
+      "loss": 1.0785,
+      "step": 180
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.976356797420742e-05,
+      "loss": 0.8931,
+      "step": 190
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.973670069854917e-05,
+      "loss": 0.7832,
+      "step": 200
+    },
+    {
+      "epoch": 0.02,
+      "eval_yahma/alpaca-cleaned_loss": 1.1423346996307373,
+      "eval_yahma/alpaca-cleaned_runtime": 1014.8375,
+      "eval_yahma/alpaca-cleaned_samples_per_second": 1.971,
+      "eval_yahma/alpaca-cleaned_steps_per_second": 0.246,
+      "step": 200
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.970983342289093e-05,
+      "loss": 0.9966,
+      "step": 210
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.968296614723266e-05,
+      "loss": 1.111,
+      "step": 220
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.965609887157443e-05,
+      "loss": 1.0118,
+      "step": 230
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.962923159591618e-05,
+      "loss": 0.9908,
+      "step": 240
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.960236432025793e-05,
+      "loss": 0.7728,
+      "step": 250
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.957549704459969e-05,
+      "loss": 1.0558,
+      "step": 260
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.954862976894144e-05,
+      "loss": 1.1506,
+      "step": 270
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.952176249328319e-05,
+      "loss": 1.0892,
+      "step": 280
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.949489521762494e-05,
+      "loss": 0.9131,
+      "step": 290
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.94680279419667e-05,
+      "loss": 0.9817,
+      "step": 300
+    },
+    {
+      "epoch": 0.02,
+      "eval_yahma/alpaca-cleaned_loss": 1.1443711519241333,
+      "eval_yahma/alpaca-cleaned_runtime": 1070.6564,
+      "eval_yahma/alpaca-cleaned_samples_per_second": 1.868,
+      "eval_yahma/alpaca-cleaned_steps_per_second": 0.234,
+      "step": 300
+    },
+    {
+      "epoch": 0.02,
+      "learning_rate": 9.944116066630844e-05,
+      "loss": 1.0491,
+      "step": 310
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.941429339065019e-05,
+      "loss": 1.0966,
+      "step": 320
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.938742611499194e-05,
+      "loss": 1.0522,
+      "step": 330
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.936324556689951e-05,
+      "loss": 0.855,
+      "step": 340
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.933637829124127e-05,
+      "loss": 0.8461,
+      "step": 350
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.930951101558302e-05,
+      "loss": 1.0722,
+      "step": 360
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.928264373992477e-05,
+      "loss": 1.1466,
+      "step": 370
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.925577646426652e-05,
+      "loss": 1.1178,
+      "step": 380
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.922890918860828e-05,
+      "loss": 0.9691,
+      "step": 390
+    },
+    {
+      "epoch": 0.03,
+      "learning_rate": 9.920204191295003e-05,
+      "loss": 0.972,
+      "step": 400
+    },
+    {
+      "epoch": 0.03,
+      "eval_yahma/alpaca-cleaned_loss": 1.1688684225082397,
+      "eval_yahma/alpaca-cleaned_runtime": 1117.7517,
+      "eval_yahma/alpaca-cleaned_samples_per_second": 1.789,
+      "eval_yahma/alpaca-cleaned_steps_per_second": 0.224,
+      "step": 400
+    }
+  ],
+  "logging_steps": 10,
+  "max_steps": 37320,
+  "num_train_epochs": 3,
+  "save_steps": 200,
+  "total_flos": 1.193754305298432e+16,
+  "trial_name": null,
+  "trial_params": null
+}
