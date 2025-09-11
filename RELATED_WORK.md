@@ -14,6 +14,16 @@ training objective (shared by SVD-LLM too):
 
 ![alt text](docs/objective.png)
 
+# SVD-LLM
+
+Motivation: in ASVD, truncating the smallest singular values **does not guarantee** minimal loss, hence we want to achieve a **direct mapping** between singular values and compression loss. Instead of a simple/naive **scaling matrix** illustrated in [ASVD](docs/ASVD_2.png), we can use a **whitening matrix** $S$:
+
+![alt text](docs/SVD-LLM.png)
+
+this **whitening matrix** is computed such that it satisfies the following property:
+
+![alt text](docs/whitening.png)
+
 ## SVD-LLM (V2)
 
 adaptive compression ratio + two rounds SVD for finetuning:

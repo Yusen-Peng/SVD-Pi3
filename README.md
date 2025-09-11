@@ -1,14 +1,8 @@
 # SVD-π3: Efficient Visual Geometry Learning via Singular Value Decomposition
 
-## SVD-LLM
+# SVD-π3 Pipeline
 
-Motivation: in ASVD, truncating the smallest singular values **does not guarantee** minimal loss, hence we want to achieve a **direct mapping** between singular values and compression loss. Instead of a simple/naive **scaling matrix** illustrated in [ASVD](docs/ASVD_2.png), we can use a **whitening matrix** $S$:
-
-![alt text](docs/SVD-LLM.png)
-
-this **whitening matrix** is computed such that it satisfies the following property:
-
-![alt text](docs/whitening.png)
+![alt text](docs/SVD_Pi3.png)
 
 ## 🔥 SVD-π3 Implementatin Roadmap
 
