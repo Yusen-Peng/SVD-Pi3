@@ -189,18 +189,18 @@ dataset collection:
 | SVD-π3 (coming soon!) | ? | ? | ? | ?  | ? | ? |  ? |  ? |  ? | ? |  
 
 
-## 🔥 SVD-π3 Implementatin Roadmap 🔥
+## 🔥 SVD-π3 Implementatin Roadmap
 
-- [ ] Whitening only (no updates)
+- [x] Whitening only (no updates)
   - [x] collect calibration data
     - [x] sintel_training_ALLMODS_512_224_8_10_3.pt (64 batches, 512 images)
-  - [ ] derive the whitening matrix via profiling 
-    - [x] fallback to EVD when Cholesky fails
-    - [x] example: "✅95/144 succeeded with Cholesky, 49/144 used EVD fallback"
-  - [ ] apply whitening
-    - [ ] TBD
-    - [ ] TBD
-    - [ ] TBD
+  - [x] derive the whitening matrix via profiling 
+    - [x] fallback to EVD when Cholesky fails ("✅95/144 succeeded with Cholesky, 49/144 used EVD fallback")
+  - [x] apply whitening
+    - [x] SVD_Pi3Attention
+    - [x] SVD_Pi3MLP
+    - [x] Pi3_whitening
+      - [x] hierarchical attempts on SVD (float32 GPU -> float64 GPU -> float64 CPU)
 - [ ] Whitening + local update (light finetune)
 - [ ] Local update only (no whitening)
 - [ ] evaluation
