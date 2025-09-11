@@ -55,6 +55,10 @@ def Pi3_get_calib_train_data(dataset_name, whitening_nsamples, seqlen):
     raise NotImplementedError()
 
 
+
+
+
+############################### BELOW ARE FROM SVD-LLM repo #####################################
 def get_wikitext2(nsamples, seed, seqlen, tokenizer, dataset_cache_dir=None):
     traindata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train', cache_dir=dataset_cache_dir)
     testdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='test', cache_dir=dataset_cache_dir)

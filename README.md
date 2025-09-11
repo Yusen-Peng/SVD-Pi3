@@ -169,16 +169,25 @@ Sintel dataset:
 
 dataset collection:
 
-- [ ] 7-Scenes
-  - [x] preprocessing (running overnight)
+- [x] 7-Scenes
+  - [x] preprocessing
 - [ ] Neural-NRGBD
 - [ ] DTU
 
-7-scenes dataset:
-| model | ATE | RPE trans | RPE rot |
-| ----- | ------ | ---- | ----- |
-| original π3 | ? | ? | ? |
-| SVD-π3 (coming soon!) | ? | ? | ? |
+7-scenes-dense:
+
+| model | Acc-mean | Acc-med | Comp-mean | Comp-med | NC-mean | NC-med | NC1-mean | NC1-med | NC2-mean | NC2-med |
+| ----- | -------- | ------- | --------- | -------- | ------- | ------ | -------- | ------- | -------- | ------- | 
+| original π3 | 0.0157 | 0.0066 | 0.0220 | 0.0105 | 0.6886 | 0.7920 | 0.6913 | 0.7975 | 0.6859 | 0.7865 |
+| SVD-π3 (coming soon!) | ? | ? | ? | ?  | ? | ? |  ? |  ? |  ? | ? |  
+
+7-scenes-sparse:
+
+| model | Acc-mean | Acc-med | Comp-mean | Comp-med | NC-mean | NC-med | NC1-mean | NC1-med | NC2-mean | NC2-med |
+| ----- | -------- | ------- | --------- | -------- | ------- | ------ | -------- | ------- | -------- | ------- | 
+| original π3 | 0.0469 | 0.0284 | 0.0736 | 0.0484 | 0.7413 | 0.8402 | 0.7446 | 0.8427 | 0.7379 | 0.8378 |
+| SVD-π3 (coming soon!) | ? | ? | ? | ?  | ? | ? |  ? |  ? |  ? | ? |  
+
 
 ## 🔥 SVD-π3 Implementation Roadmap 🔥
 
