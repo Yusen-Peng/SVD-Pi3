@@ -1,6 +1,6 @@
 # SVD-π3: Efficient Visual Geometry Learning via Singular Value Decomposition
 
-# SVD-π3 Pipeline
+## SVD-π3 Pipeline
 
 ![alt text](docs/SVD_Pi3.png)
 
