@@ -6,3 +6,7 @@ opencv-python
 plyfile
 huggingface_hub
 safetensors
+omegaconf
+accelerate
+rootutils
+hydra
