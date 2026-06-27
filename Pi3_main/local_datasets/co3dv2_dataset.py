@@ -77,7 +77,7 @@ class CO3DV2Dataset(BaseDataset):
         assert mask_bg in (True, False, 'rand')
         self.mask_bg = mask_bg
 
-        if not os.path.exists(f'/data/wanghaoxuan/dataset_cache/co3dv2_{self.mode}_cache.npy'):
+        if not os.path.exists(f'/scratch/path/to/dataset_cache/co3dv2_{self.mode}_cache.npy'):
             self.sequences = []
             self.num_image = {}
 
@@ -102,10 +102,10 @@ class CO3DV2Dataset(BaseDataset):
                     self.num_image[(seq, sub_seq)] = len(annotation[sub_seq])
                     self.sequences.append((seq, sub_seq))
 
-            np.save(f'/data/wanghaoxuan/dataset_cache/co3dv2_{self.mode}_cache', dict(sequences=self.sequences, num_image=self.num_image))
+            np.save(f'/scratch/path/to/dataset_cache/co3dv2_{self.mode}_cache', dict(sequences=self.sequences, num_image=self.num_image))
 
         else:
-            npy = np.load(f'/data/wanghaoxuan/dataset_cache/co3dv2_{self.mode}_cache.npy', allow_pickle=True).item()
+            npy = np.load(f'/scratch/path/to/dataset_cache/co3dv2_{self.mode}_cache.npy', allow_pickle=True).item()
             self.sequences = npy['sequences']
             self.num_image = npy['num_image']
 

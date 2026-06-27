@@ -126,9 +126,9 @@ def Pi3_get_calib_train_data(
 
     # save the dataset
     if root.endswith('sintel'):
-        torch.save(traindataset, f"/data/wanghaoxuan/SVD_Pi3_cache/sintel_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
+        torch.save(traindataset, f"/scratch/path/to/SVD_Pi3_cache/sintel_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
     elif 'scannet' in root.lower():
-        torch.save(traindataset, f"/data/wanghaoxuan/SVD_Pi3_cache/scannet_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
+        torch.save(traindataset, f"/scratch/path/to/SVD_Pi3_cache/scannet_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
     else:
         raise NotImplementedError("This dataset is not supported yet.")
     

@@ -13,8 +13,8 @@ Re10K:
 CO3Dv2:
   cfg:
     _target_: datasets.co3d_v2.Co3dDataset
-    CO3D_DIR: /data/wanghaoxuan/CO3Dv2_single_seq
-    CO3D_ANNOTATION_DIR: /data/wanghaoxuan/co3d_v2_annotations
+    CO3D_DIR: /scratch/path/to/CO3Dv2_single_seq
+    CO3D_ANNOTATION_DIR: /scratch/path/to/co3d_v2_annotations
     categories: train
   sampling:
     strategy: random_order

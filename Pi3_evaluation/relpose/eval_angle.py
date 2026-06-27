@@ -43,12 +43,12 @@ def main(hydra_cfg: DictConfig):
             model.load_state_dict(sd_rest, strict=False)
 
             # re-load the calibration dataset
-            cali_path = "/data/wanghaoxuan/SVD_Pi3_cache/scannet_pi3_calib_nsamples256_size224_seed3.pt"
+            cali_path = "/scratch/path/to/SVD_Pi3_cache/scannet_pi3_calib_nsamples256_size224_seed3.pt"
             cali_white_data = torch.load(cali_path, map_location="cpu")
             print("🍀🍀🍀Learning adaptive entropy cfg from calibration data...🍀🍀🍀")
             learn_entropy_cfg_from_calib(
                 calib=cali_white_data,
-                save_path='/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg.json',
+                save_path='/path/to/SVD-pi3/adaptive_cfg.json',
                 bins=256,
                 tail_frac=0.25,
                 rr_values=(0.1, 0.2, 0.3),

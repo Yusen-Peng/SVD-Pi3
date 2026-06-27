@@ -54,7 +54,7 @@ def Pi3_get_calib_train_data(
     sampling_stride: int = 10,
     split: str = "training",
     seed: int = 3,
-    cache_dir: str = "/data/wanghaoxuan/SVD_Pi3_cache",
+    cache_dir: str = "/scratch/path/to/SVD_Pi3_cache",
 ) -> List[Dict[str, torch.Tensor]]:
     os.makedirs(cache_dir, exist_ok=True)
     cache_file = os.path.join(

@@ -376,7 +376,7 @@ def main():
     parser.add_argument('--dataset', type=str, default='wikitext2',help='Where to extract calibration data from [wikitext2, ptb, c4]')
     parser.add_argument('--whitening_nsamples', type=int, default=256, help='Number of calibration data samples for whitening.')
     parser.add_argument('--updating_nsamples', type=int, default=16, help='Number of calibration data samples for udpating.')
-    parser.add_argument('--save_path', type=str, default="/data/wanghaoxuan/SVD_Pi3_cache", help='the path to save the compressed model checkpoints.`')
+    parser.add_argument('--save_path', type=str, default="/scratch/path/to/SVD_Pi3_cache", help='the path to save the compressed model checkpoints.`')
     parser.add_argument('--seed',type=int, default=0, help='Seed for sampling the calibration data')
     parser.add_argument('--DEV', type=str, default="cuda", help='device')
     parser.add_argument('--baseline', action='store_true', help='whether to run the baseline SVD (no whitening) mode')
@@ -388,7 +388,7 @@ def main():
     parser.add_argument("--ckpt", type=str, default="Pi3_main/pi3_model.safetensors", help="Path to the model checkpoint file. Default: None")
     parser.add_argument('--ratio', type=float, default=0.2, help='Target compression ratio,(0,1), default=0.2, means only keeping about 20% of the params.')
     parser.add_argument("--device", type=str, default='cuda', help="Device to run inference on ('cuda' or 'cpu'). Default: 'cuda'")
-    parser.add_argument("--calibration_dataset_path", type=str, default="/data/wanghaoxuan/sintel", help="Path to the calibration dataset.")
+    parser.add_argument("--calibration_dataset_path", type=str, default="/scratch/path/to/sintel", help="Path to the calibration dataset.")
 
     args = parser.parse_args()
     # NOTE: whether to run the baseline SVD (no whitening) mode

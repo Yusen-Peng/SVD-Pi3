@@ -58,7 +58,7 @@ def load_single_image_as_imgs(image_path: str, device="cpu") -> torch.Tensor:
 if __name__ == "__main__":
     VIS = True
 
-    image_path = "/data/wanghaoxuan/sintel/evaluation/final/temple_3/frame_0001.png"
+    image_path = "/scratch/path/to/sintel/evaluation/final/temple_3/frame_0001.png"
     imgs = load_single_image_as_imgs(image_path)
 
     # binarization with Otsu

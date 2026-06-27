@@ -258,10 +258,10 @@ def Pi3_get_calib_train_data(
     
     elif root.endswith('diverse'):
         print(f"😋😋😋we are collecting diverse scenes!!😋😋😋")
-        frames_sintel = collect_sintel_frames('/data/wanghaoxuan/yusen_stuff/sintel', split, "final")
-        frames_scannet = collect_scannet_frames('/data/wanghaoxuan/yusen_stuff/scannetv2')
-        frames_bonn = collect_bonn_frames('/data/wanghaoxuan/yusen_stuff/rgbd_bonn_dataset')
-        frames_kitti = collect_kitti_frames('/data/wanghaoxuan/yusen_stuff/kitti', camera='image_02')
+        frames_sintel = collect_sintel_frames('/path/to/sintel', split, "final")
+        frames_scannet = collect_scannet_frames('/path/to/scannetv2')
+        frames_bonn = collect_bonn_frames('/path/to/rgbd_bonn_dataset')
+        frames_kitti = collect_kitti_frames('/path/to/kitti', camera='image_02')
 
 
         frames_dict = {
@@ -314,17 +314,17 @@ def Pi3_get_calib_train_data(
 
     # save the dataset
     if root.endswith('sintel'):
-        torch.save(traindataset, f"/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/curation/sintel_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
+        torch.save(traindataset, f"/path/to/SVD_Pi3_cache/curation/sintel_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
     elif 'scannet' in root.lower():
-        torch.save(traindataset, f"/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/curation/scannet_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
+        torch.save(traindataset, f"/path/to/SVD_Pi3_cache/curation/scannet_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
     elif 'diverse' in root.lower():
-        torch.save(traindataset, f"/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/curation/diverse_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
+        torch.save(traindataset, f"/path/to/SVD_Pi3_cache/curation/diverse_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
     else:
         raise NotImplementedError("This dataset is not supported yet.")
 
 
     # # dump chosen images for reference
-    # dump_dir = f"/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/curation/diverse"
+    # dump_dir = f"/path/to/SVD_Pi3_cache/curation/diverse"
     # dump_chosen_images(chosen, dump_dir)
     return traindataset
 
@@ -425,7 +425,7 @@ def Pi3_get_entropy_logs_with_calib_train_data(
     assert frames is not None
     chosen = random.sample(frames, nsamples) if len(frames) >= nsamples else random.choices(frames, k=nsamples)
 
-    out_dir = "/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/"
+    out_dir = "/path/to/SVD_Pi3_cache/"
     csv_path = os.path.join(out_dir, f"{tag}_pi3_calib_entropy_nsamples{nsamples}_size{image_size}_seed{seed}.csv")
     to_tensor = build_transform(image_size=image_size, center_crop=True)
     traindataset: List[Dict[str, torch.Tensor]] = []
@@ -464,7 +464,7 @@ def Pi3_get_entropy_logs_with_calib_train_data(
 
 if __name__ == "__main__":
     # the original dataset
-    root = "/data/wanghaoxuan/yusen_stuff/scannetv2"
+    root = "/path/to/scannetv2"
     # root = "diverse"
     # Pi3_get_calib_train_data(root, nsamples=256, batch_size=8, image_size=224, split="training", seed=3)
     Pi3_get_entropy_logs_with_calib_train_data(
@@ -474,7 +474,7 @@ if __name__ == "__main__":
         image_size=224,
         split="training",
         seed=3,
-        entropy_cfg="/data/wanghaoxuan/yusen_stuff/SVD-pi3/adaptive_cfg.json",
+        entropy_cfg="/path/to/SVD-pi3/adaptive_cfg.json",
         save_entropy_csv=True,
         entropy_bins=256
     )

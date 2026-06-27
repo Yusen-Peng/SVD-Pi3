@@ -2,45 +2,45 @@
   cfg:
     _target_: datasets.sevenscenes.SevenScenes
     split: test
-    SEVENSCENES_DIR: /data/wanghaoxuan/yusen_stuff/7scenes
+    SEVENSCENES_DIR: /path/to/7scenes
     load_img_size: ${load_img_size}
-    cache_file: /data/wanghaoxuan/yusen_stuff/dataset_cache/7scenes_mv_recon_cache.npy
+    cache_file: /path/to/dataset_cache/7scenes_mv_recon_cache.npy
   sampling:
     strategy: stride
     kf_every: 200  # ori setting in cut3r
-  seq_id_map: /data/wanghaoxuan/yusen_stuff/SVD-pi3/7scenes_mv-recon_seq-id-map-kf200.json
+  seq_id_map: /path/to/SVD-pi3/7scenes_mv-recon_seq-id-map-kf200.json
 
 7scenes-dense:
   cfg:
     _target_: datasets.sevenscenes.SevenScenes
     split: test
-    SEVENSCENES_DIR: /data/wanghaoxuan/yusen_stuff/7scenes
+    SEVENSCENES_DIR: /path/to/7scenes
     load_img_size: ${load_img_size}
-    cache_file: /data/wanghaoxuan/yusen_stuff/dataset_cache/7scenes_mv_recon_cache.npy
+    cache_file: /path/to/dataset_cache/7scenes_mv_recon_cache.npy
   sampling:
     strategy: stride
     kf_every: 40  # our dense setting
-  seq_id_map: /data/wanghaoxuan/yusen_stuff/SVD-pi3/7scenes_mv-recon_seq-id-map-kf40.json
+  seq_id_map: /path/to/SVD-pi3/7scenes_mv-recon_seq-id-map-kf40.json
 
 NRGBD-sparse:
   cfg:
     _target_: datasets.nrgbd.NRGBD
-    NRGBD_DIR: /data/wanghaoxuan/yusen_stuff/neural_rgbd
+    NRGBD_DIR: /path/to/neural_rgbd
     load_img_size: ${load_img_size}
-    cache_file: /data/wanghaoxuan/yusen_stuff/dataset_cache/nrgbd_mv_recon_cache.npy
+    cache_file: /path/to/dataset_cache/nrgbd_mv_recon_cache.npy
   sampling:
     strategy: stride
     kf_every: 500  # ori setting in cut3r
     # kf_every: 100
-  seq_id_map: /data/wanghaoxuan/yusen_stuff/SVD-pi3/datasets/seq-id-maps/NRGBD_mv-recon_seq-id-map-kf500.json
+  seq_id_map: /path/to/SVD-pi3/datasets/seq-id-maps/NRGBD_mv-recon_seq-id-map-kf500.json
 
 NRGBD-dense:
   cfg:
     _target_: datasets.nrgbd.NRGBD
-    NRGBD_DIR: /data/wanghaoxuan/yusen_stuff/neural_rgbd
+    NRGBD_DIR: /path/to/neural_rgbd
     load_img_size: ${load_img_size}
-    cache_file: /data/wanghaoxuan/yusen_stuff/dataset_cache/nrgbd_mv_recon_cache.npy
+    cache_file: /path/to/dataset_cache/nrgbd_mv_recon_cache.npy
   sampling:
     strategy: stride
     kf_every: 100  # our dense setting
-  seq_id_map: /data/wanghaoxuan/yusen_stuff/SVD-pi3/datasets/seq-id-maps/NRGBD_mv-recon_seq-id-map-kf100.json
+  seq_id_map: /path/to/SVD-pi3/datasets/seq-id-maps/NRGBD_mv-recon_seq-id-map-kf100.json

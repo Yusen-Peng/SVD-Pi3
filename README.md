@@ -7,19 +7,21 @@
 
 ## Environment
 
-```bash
+Please follow the official π^3 repository to set up dependency/environement, prepare datasets, and change data/model path configurations accordingly.
+
+<!-- ```bash
 source ~/envs/compress/bin/activate
-```
+``` -->
 
 ## Latency/Efficiency eval
 
-GFLOP measurement:
+[Pi3_evaluation/latency_measure.py](Pi3_evaluation/latency_measure.py) contains the code for FLOP analysis and measurement. How to run:
 
 ```bash
 PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=1 python Pi3_evaluation/latency_measure.py
 ```
 
-Parameter measuring:
+[Pi3_evaluation/param_measure.py](Pi3_evaluation/param_measure.py) contains the code for parameter percentage analysis. How to run:
 
 ```bash
 CUDA_VISIBLE_DEVICES=3 PYTHONNOUSERSITE=1 python Pi3_evaluation/param_measure.py
@@ -33,13 +35,13 @@ For Pi3:
 
 ```bash
 # stay in 'SVD-pi3' (root directory)
-CUDA_VISIBLE_DEVICES=0 PYTHONNOUSERSITE=1 python Pi3_main/SVDPi3.py --ckpt /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/pi3_model.safetensors --save_path /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache --ratio 0.2 --baseline
+CUDA_VISIBLE_DEVICES=0 PYTHONNOUSERSITE=1 python Pi3_main/SVDPi3.py --ckpt /path/to/SVD_Pi3_cache/pi3_model.safetensors --save_path /path/to/SVD_Pi3_cache --ratio 0.2 --baseline
 ```
 
 For VGGT:
 
 ```bash
-CUDA_VISIBLE_DEVICES=1 PYTHONNOUSERSITE=1 python Pi3_evaluation/SVD_VGGT.py --save_path /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache --ratio 0.2 --calibration_dataset_path /data/wanghaoxuan/yusen_stuff/scannetv2 --baseline
+CUDA_VISIBLE_DEVICES=1 PYTHONNOUSERSITE=1 python Pi3_evaluation/SVD_VGGT.py --save_path /path/to/SVD_Pi3_cache --ratio 0.2 --calibration_dataset_path /path/to/scannetv2 --baseline
 ```
 
 ## Baseline 2: data whitening SVD
@@ -48,18 +50,17 @@ For Pi3:
 
 ```bash
 # stay in 'SVD-pi3' (root directory)
-CUDA_VISIBLE_DEVICES=0 PYTHONNOUSERSITE=1 python Pi3_main/SVDPi3.py --ckpt /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/model.safetensors --save_path /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache --ratio 0.2 --calibration_dataset_path /data/wanghaoxuan/yusen_stuff/scannetv2 --whitening_nsamples 256
+CUDA_VISIBLE_DEVICES=0 PYTHONNOUSERSITE=1 python Pi3_main/SVDPi3.py --ckpt /path/to/SVD_Pi3_cache/model.safetensors --save_path /path/to/SVD_Pi3_cache --ratio 0.2 --calibration_dataset_path /path/to/scannetv2 --whitening_nsamples 256
 # or a diverse calibration dataset
-CUDA_VISIBLE_DEVICES=0 PYTHONNOUSERSITE=1 python Pi3_main/SVDPi3.py --ckpt /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/model.safetensors --save_path /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache --ratio 0.2 --calibration_dataset_path diverse --whitening_nsamples 256
+CUDA_VISIBLE_DEVICES=0 PYTHONNOUSERSITE=1 python Pi3_main/SVDPi3.py --ckpt /path/to/SVD_Pi3_cache/model.safetensors --save_path /path/to/SVD_Pi3_cache --ratio 0.2 --calibration_dataset_path diverse --whitening_nsamples 256
 ```
 
 
 For VGGT:
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 PYTHONNOUSERSITE=1 python Pi3_evaluation/SVD_VGGT.py --ckpt /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/model.safetensors --save_path /data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache --ratio 0.2 --calibration_dataset_path /data/wanghaoxuan/yusen_stuff/scannetv2 --whitening_nsamples 256
+CUDA_VISIBLE_DEVICES=0 PYTHONNOUSERSITE=1 python Pi3_evaluation/SVD_VGGT.py --ckpt /path/to/SVD_Pi3_cache/model.safetensors --save_path /path/to/SVD_Pi3_cache --ratio 0.2 --calibration_dataset_path /path/to/scannetv2 --whitening_nsamples 256
 ```
-
 
 ## Evaluation
 

@@ -42,7 +42,7 @@ def robust_aabb_crop(
     return pcd.select_by_index(np.where(mask)[0])
 
 if __name__ == "__main__":
-    path = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/outputs_ada/mv_recon/NRGBD-dense/breakfast_room-pred.ply"
+    path = "/path/to/SVD-pi3/outputs_ada/mv_recon/NRGBD-dense/breakfast_room-pred.ply"
     pcd = o3d.io.read_point_cloud(path)
 
     # Optional: voxel downsample a tiny bit to stabilize stats (doesn't change geometry much)

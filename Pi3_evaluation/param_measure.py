@@ -229,9 +229,9 @@ if __name__ == '__main__':
     # --- Argument Parsing ---
     parser = argparse.ArgumentParser(description="Run inference with the Pi3 model.")
     
-    parser.add_argument("--data_path", type=str, default='/data/wanghaoxuan/yusen_stuff/examples/skating.mp4',
+    parser.add_argument("--data_path", type=str, default='/path/to/examples/skating.mp4',
                         help="Path to the input image directory or a video file.")
-    parser.add_argument("--ckpt", type=str, default='/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/pi3_model.safetensors',
+    parser.add_argument("--ckpt", type=str, default='/path/to/SVD_Pi3_cache/pi3_model.safetensors',
                         help="Path to the model checkpoint file. Default: None")
     parser.add_argument("--device", type=str, default='cuda',
                         help="Device to run inference on ('cuda' or 'cpu'). Default: 'cuda'")

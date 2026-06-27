@@ -100,7 +100,7 @@ def process_scene(ds):
 if __name__ == "__main__":
     # name of the folder where we download the original 7scenes dataset to
     # we restructure the dataset by creating symbolic links to that folder
-    src_folder = '/data/wanghaoxuan/7scenes'
+    src_folder = '/scratch/path/to/7scenes'
     focal_length = 525.0
 
     # focal length of the depth sensor (source: https://www.microsoft.com/en-us/research/project/rgb-d-dataset-7-scenes/)

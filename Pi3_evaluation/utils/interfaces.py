@@ -538,7 +538,7 @@ def rr_from_entropy_efficiency_only(s_norm: float, cfg: dict) -> float:
 @torch.no_grad()
 def learn_entropy_cfg_from_calib(
     calib: List[Dict[str, torch.Tensor]],
-    save_path: str = '/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg.json',
+    save_path: str = '/path/to/SVD-pi3/adaptive_cfg.json',
     bins: int = 256,
     tail_frac: float = 0.25, # 25% low, 50% mid, 25% high => avg rr = 0.2
     rr_values: Tuple[float, float, float] = (0.1, 0.2, 0.3),
@@ -662,7 +662,7 @@ def solve_beta_for_budget(
 @torch.no_grad()
 def learn_entropy_cfg_continuous_from_calib(
     calib: List[Dict[str, torch.Tensor]],
-    save_path: str = "/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_finegrained.json",
+    save_path: str = "/path/to/SVD-pi3/adaptive_cfg_finegrained.json",
     bins: int = 256,
     rr_min: float = 0.1,
     rr_max: float = 0.3,
@@ -757,7 +757,7 @@ def mix_max_norm(v, p5, p95):
 @torch.no_grad()
 def learn_augmented_entropy_cfg_from_calib(
     calib: List[Dict[str, torch.Tensor]],
-    save_path: str = '/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_augmented.json',
+    save_path: str = '/path/to/SVD-pi3/adaptive_cfg_augmented.json',
     bins: int = 256,
     tail_frac: float = 0.25, # 25% low, 50% mid, 25% high => avg rr = 0.2
     rr_values: Tuple[float, float, float] = (0.1, 0.2, 0.3),
@@ -916,7 +916,7 @@ def fine_grained_adaptive_infer_monodepth(file: str, model: Pi3, hydra_cfg: Dict
                             device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute entropy score + map to continuous retention
-    entropy_cfg = _load_entropy_cfg("/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_finegrained.json")
+    entropy_cfg = _load_entropy_cfg("/path/to/SVD-pi3/adaptive_cfg_finegrained.json")
     s = entropy_score_from_imgs(imgs, bins=int(entropy_cfg.get("bins", 256)))
     rr = rr_from_entropy_fine_grained_inference(s, entropy_cfg)
 
@@ -943,7 +943,7 @@ def augmented_adaptive_infer_monodepth(file: str, model: Pi3, hydra_cfg: DictCon
                              device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute augmented entropy score + map to retention
-    entropy_cfg = _load_entropy_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_augmented.json')
+    entropy_cfg = _load_entropy_cfg('/path/to/SVD-pi3/adaptive_cfg_augmented.json')
     H_img, H_bin, H_edge = augmented_entropy_score_from_imgs(imgs, bins=256)
 
     h_img_n  = mix_max_norm(H_img,  entropy_cfg["img_entropy_p5"],  entropy_cfg["img_entropy_p95"])
@@ -1051,7 +1051,7 @@ def build_codebook_kmeans(
 def learn_entropy_cfg_from_calib_embedding(
     calib: List[Dict[str, torch.Tensor]],
     model: Pi3,
-    save_path: str = "/mnt/extdisk1/wanghaoxuan/SVD-pi3/embedding_adaptive_cfg.json",
+    save_path: str = "/path/to/SVD-pi3/embedding_adaptive_cfg.json",
     tail_frac: float = 0.25,
     rr_values: Tuple[float, float, float] = (0.1, 0.2, 0.3),
     device: str = "cuda",
@@ -1240,7 +1240,7 @@ def embedding_adaptive_infer_monodepth(file: str, model: Pi3, hydra_cfg: DictCon
     )
 
     # compute EMBEDDING entropy score + map to retention
-    entropy_cfg = _load_entropy_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_embedding.json')
+    entropy_cfg = _load_entropy_cfg('/path/to/SVD-pi3/adaptive_cfg_embedding.json')
     s = entropy_score_from_imgs_embedding(model, imgs, entropy_cfg, device=str(hydra_cfg.device))
     s_norm = normalize_entropy_score(s, entropy_cfg)
     rr = rr_from_entropy(s_norm, entropy_cfg)
@@ -1369,7 +1369,7 @@ def normalize_probe_score(s: float, cfg: dict, eps: float = 1e-8) -> float:
 def learn_drift_cfg_from_calib(
     calib: List[Dict[str, torch.Tensor]],
     model: Pi3,
-    save_path: str = "/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_drift.json",
+    save_path: str = "/path/to/SVD-pi3/adaptive_cfg_drift.json",
     tail_frac: float = 0.25,
     rr_values: Tuple[float, float, float] = (0.1, 0.2, 0.3),
     device: str = "cuda",
@@ -1450,7 +1450,7 @@ def drifting_adaptive_infer_monodepth(file: str, model: Pi3, hydra_cfg: DictConf
     )
 
     # compute drifting score + map to retention
-    drift_cfg = _load_drift_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_drifting.json')
+    drift_cfg = _load_drift_cfg('/path/to/SVD-pi3/adaptive_cfg_drifting.json')
     s = probe_cosine_drift_early_decoder(
         model=model,
         imgs=imgs,
@@ -1583,7 +1583,7 @@ def fine_grained_adaptive_infer_videodepth(filelist: str, model: Pi3, hydra_cfg:
     imgs = load_and_resize14(filelist, new_width=hydra_cfg.load_img_size, device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute entropy score + map to continuous retention
-    entropy_cfg = _load_entropy_cfg("/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_finegrained.json")
+    entropy_cfg = _load_entropy_cfg("/path/to/SVD-pi3/adaptive_cfg_finegrained.json")
     
     # first image/frame only for entropy computation
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
@@ -1615,7 +1615,7 @@ def augmented_adaptive_infer_videodepth(filelist: str, model: Pi3, hydra_cfg: Di
     imgs = load_and_resize14(filelist, new_width=hydra_cfg.load_img_size, device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute augmented entropy score + map to retention
-    entropy_cfg = _load_entropy_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_augmented.json')
+    entropy_cfg = _load_entropy_cfg('/path/to/SVD-pi3/adaptive_cfg_augmented.json')
     
     # first image/frame only for entropy computation
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
@@ -1660,7 +1660,7 @@ def drifting_adaptive_infer_videodepth(filelist: str, model: Pi3, hydra_cfg: Dic
     )
 
     # compute drifting score + map to retention
-    drift_cfg = _load_drift_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_drifting.json')
+    drift_cfg = _load_drift_cfg('/path/to/SVD-pi3/adaptive_cfg_drifting.json')
     
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
     
@@ -1846,7 +1846,7 @@ def fine_grained_adaptive_infer_cameras_c2w(filelist: str, model: Pi3, hydra_cfg
     imgs = load_and_resize14(filelist, new_width=hydra_cfg.load_img_size, device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute entropy score + map to continuous retention
-    entropy_cfg = _load_entropy_cfg("/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_finegrained.json")
+    entropy_cfg = _load_entropy_cfg("/path/to/SVD-pi3/adaptive_cfg_finegrained.json")
     
     # first image/frame only for entropy computation
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
@@ -1874,7 +1874,7 @@ def augmented_adaptive_infer_cameras_c2w(filelist: str, model: Pi3, hydra_cfg: D
     imgs = load_and_resize14(filelist, new_width=hydra_cfg.load_img_size, device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute augmented entropy score + map to retention
-    entropy_cfg = _load_entropy_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_augmented.json')
+    entropy_cfg = _load_entropy_cfg('/path/to/SVD-pi3/adaptive_cfg_augmented.json')
     
     # first image/frame only for entropy computation
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
@@ -1911,7 +1911,7 @@ def drifting_adaptive_infer_cameras_c2w(filelist: str, model: Pi3, hydra_cfg: Di
     imgs = load_and_resize14(filelist, new_width=hydra_cfg.load_img_size, device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute drifting score + map to retention
-    drift_cfg = _load_drift_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_drifting.json')
+    drift_cfg = _load_drift_cfg('/path/to/SVD-pi3/adaptive_cfg_drifting.json')
     
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
     
@@ -2051,7 +2051,7 @@ def fine_grained_adaptive_infer_mv_pointclouds(filelist: str, model: Pi3, hydra_
     imgs = load_and_resize14(filelist, new_width=hydra_cfg.load_img_size, device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute entropy score + map to continuous retention
-    entropy_cfg = _load_entropy_cfg("/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_finegrained.json")
+    entropy_cfg = _load_entropy_cfg("/path/to/SVD-pi3/adaptive_cfg_finegrained.json")
     
     # first image/frame only for entropy computation
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
@@ -2083,7 +2083,7 @@ def augmented_adaptive_infer_mv_pointclouds(filelist: str, model: Pi3, hydra_cfg
     imgs = load_and_resize14(filelist, new_width=hydra_cfg.load_img_size, device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute augmented entropy score + map to retention
-    entropy_cfg = _load_entropy_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_augmented.json')
+    entropy_cfg = _load_entropy_cfg('/path/to/SVD-pi3/adaptive_cfg_augmented.json')
     
     # first image/frame only for entropy computation
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
@@ -2126,7 +2126,7 @@ def drifting_adaptive_infer_mv_pointclouds(filelist: str, model: Pi3, hydra_cfg:
     imgs = load_and_resize14(filelist, new_width=hydra_cfg.load_img_size, device=hydra_cfg.device, verbose=hydra_cfg.verbose)
 
     # compute drifting score + map to retention
-    drift_cfg = _load_drift_cfg('/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_drifting.json')
+    drift_cfg = _load_drift_cfg('/path/to/SVD-pi3/adaptive_cfg_drifting.json')
     
     first = imgs[:, :1]   # -> (B, 1, 3, H, W) = (1, 1, 3, H, W)
     

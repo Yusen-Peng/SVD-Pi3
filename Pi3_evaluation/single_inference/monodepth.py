@@ -69,24 +69,24 @@ def save_depth_colormap_png(depth_map: np.ndarray, png_save_path: str,
 def main(hydra_cfg: DictConfig):
     
     
-    #model_path = "/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/Pi3_svd_baseline_0.4_BASE.safetensors"
-    model_path = "/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/Pi3_svd_baseline_0.2.safetensors"
+    #model_path = "/path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.4_BASE.safetensors"
+    model_path = "/path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.2.safetensors"
 
 
-    image_file = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/Pi3_evaluation/single_inference/sample_images/final_sample.png"
+    image_file = "/path/to/SVD-pi3/Pi3_evaluation/single_inference/sample_images/final_sample.png"
 
 
 
-    #gt_path = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/Pi3_evaluation/single_inference/sample_images/high_depth.png"
+    #gt_path = "/path/to/SVD-pi3/Pi3_evaluation/single_inference/sample_images/high_depth.png"
 
-    # image_file = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/Pi3_evaluation/single_inference/sample_images/mid_sample.jpg"
-    # gt_path = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/Pi3_evaluation/single_inference/sample_images/mid_depth.png"
+    # image_file = "/path/to/SVD-pi3/Pi3_evaluation/single_inference/sample_images/mid_sample.jpg"
+    # gt_path = "/path/to/SVD-pi3/Pi3_evaluation/single_inference/sample_images/mid_depth.png"
 
     
     
     
     pretrained_model_name_or_path = model_path
-    save_dir = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/Pi3_evaluation/single_inference/saved_depths"
+    save_dir = "/path/to/SVD-pi3/Pi3_evaluation/single_inference/saved_depths"
 
 
     ADAPTIVE_MODE = 'input' # 'embedding' or 'input' or 'drift' ['input' is the best option so far]
@@ -115,13 +115,13 @@ def main(hydra_cfg: DictConfig):
 
             # re-load the calibration dataset
             if DIVERSE_CALI:
-                cali_path = "/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/curation/diverse_pi3_calib_nsamples256_size224_seed3.pt"
-                save_path = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/diverse_adaptive_cfg.json"
+                cali_path = "/path/to/SVD_Pi3_cache/curation/diverse_pi3_calib_nsamples256_size224_seed3.pt"
+                save_path = "/path/to/SVD-pi3/diverse_adaptive_cfg.json"
                 print("🌈🌈🌈Using DIVERSE calibration dataset for learning adaptive cfg...🌈🌈🌈")
             
             else:
-                cali_path = "/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/scannet_pi3_calib_nsamples256_size224_seed3.pt"
-                save_path = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/adaptive_cfg.json"
+                cali_path = "/path/to/SVD_Pi3_cache/scannet_pi3_calib_nsamples256_size224_seed3.pt"
+                save_path = "/path/to/SVD-pi3/adaptive_cfg.json"
                 print("🌟🌟🌟Using SCANNET calibration dataset for learning adaptive cfg...🌟🌟🌟")
 
 
@@ -142,7 +142,7 @@ def main(hydra_cfg: DictConfig):
                         print("🍃🍃🍃Learning adaptive FINE-GRAINED entropy cfg from calibration data...🍃🍃🍃")
                         learn_entropy_cfg_continuous_from_calib(
                             calib=cali_white_data,
-                            save_path='/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_finegrained.json',
+                            save_path='/path/to/SVD-pi3/adaptive_cfg_finegrained.json',
                             bins=256,
                             rr_min=0.1,
                             rr_max=0.3,
@@ -155,7 +155,7 @@ def main(hydra_cfg: DictConfig):
                     print("🌟🌟🌟Learning adaptive AUGMENTED entropy cfg from calibration data...🌟🌟🌟")
                     learn_augmented_entropy_cfg_from_calib(
                         calib=cali_white_data,
-                        save_path='/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_augmented.json',
+                        save_path='/path/to/SVD-pi3/adaptive_cfg_augmented.json',
                         bins=256,
                         tail_frac=0.25,
                         rr_values=(0.1, 0.2, 0.3),
@@ -167,7 +167,7 @@ def main(hydra_cfg: DictConfig):
                 learn_drift_cfg_from_calib(
                     calib=cali_white_data,
                     model=model,
-                    save_path='/mnt/extdisk1/wanghaoxuan/SVD-pi3/adaptive_cfg_drifting.json',
+                    save_path='/path/to/SVD-pi3/adaptive_cfg_drifting.json',
                     tail_frac=0.25,
                     rr_values=(0.1, 0.2, 0.3),
                     device=device
@@ -193,9 +193,9 @@ def main(hydra_cfg: DictConfig):
                     model.load_state_dict(sd, strict=False)
                 else:
                     print(f"🏈🏈🏈Loading the COMPRESSED and ADAPTIVE VGGT from {ckpt}...🏈🏈🏈 on device {device}")
-                    save_path = "/data/wanghaoxuan/yusen_stuff/SVD-pi3/adaptive_cfg.json"
+                    save_path = "/path/to/SVD-pi3/adaptive_cfg.json"
                     
-                    cali_path = "/data/wanghaoxuan/yusen_stuff/SVD_Pi3_cache/scannet_pi3_calib_nsamples256_size224_seed3.pt"
+                    cali_path = "/path/to/SVD_Pi3_cache/scannet_pi3_calib_nsamples256_size224_seed3.pt"
                     cali_white_data = torch.load(cali_path, map_location="cpu")
 
                     learn_entropy_cfg_from_calib(

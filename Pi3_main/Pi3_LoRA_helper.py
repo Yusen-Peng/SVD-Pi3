@@ -208,7 +208,7 @@ def build_cfg(args, phase: str, ckpt_path: str, out_dir: str) -> DictConfig:
             "weights": {"CO3DV2": 10000},
             "CO3DV2": {
                 "_target_": "local_datasets.co3dv2_dataset.CO3DV2Dataset",
-                "data_root": "/data/wanghaoxuan/CO3Dv2_single_seq",
+                "data_root": "/scratch/path/to/CO3Dv2_single_seq",
                 "frame_num": 8,
                 "mode": "train",
                 "aug_crop": 16,
@@ -224,7 +224,7 @@ def build_cfg(args, phase: str, ckpt_path: str, out_dir: str) -> DictConfig:
             "weights": {"CO3DV2": 10000},
             "CO3DV2": {
                 "_target_": "local_datasets.co3dv2_dataset.CO3DV2Dataset",
-                "data_root": "/data/wanghaoxuan/CO3Dv2_single_seq",
+                "data_root": "/scratch/path/to/CO3Dv2_single_seq",
                 "frame_num": 8,
                 "mode": "test",
                 "aug_crop": 16,
