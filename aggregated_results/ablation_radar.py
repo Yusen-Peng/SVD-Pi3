@@ -80,11 +80,19 @@ style_map = {
     "fine-grained": dict(linewidth=2.2, marker="^", markersize=5.0, zorder=3),
 }
 
+color_map = {
+    "Original": "#1f77b4",
+    "Augmented": "#ff7f0e",
+    "fine-grained": "#2ca02c",
+
+}
+
 for _, row in norm.iterrows():
     method = row["Model"]
     values = row[metrics].to_numpy(dtype=float)
     values = np.concatenate([values, [values[0]]])
 
+    color = color_map[method]
     ax.plot(
         angles,
         values,
@@ -96,19 +104,33 @@ for _, row in norm.iterrows():
     ax.fill(
         angles,
         values,
-        alpha=0.035 if method == "Original" else 0.025,
+        color,
+        alpha=0.15,
         zorder=style_map[method]["zorder"] - 1,
     )
 
+# ax.legend(
+#     loc="lower center",
+#     bbox_to_anchor=(0.5, -0.16),
+#     ncol=3,
+#     frameon=False,
+#     fontsize=10,
+#     handlelength=2.1,
+#     columnspacing=1.1,
+# )
+
 ax.legend(
     loc="lower center",
-    bbox_to_anchor=(0.5, -0.16),
+    bbox_to_anchor=(0.5, -0.15),
     ncol=3,
     frameon=False,
-    fontsize=10,
-    handlelength=2.1,
-    columnspacing=1.1,
+    fontsize=8.5,
+    handlelength=1.3,
+    handletextpad=0.4,
+    columnspacing=0.5
 )
+
+
 
 plt.tight_layout()
 plt.savefig("ablation_radar.pdf", bbox_inches="tight")

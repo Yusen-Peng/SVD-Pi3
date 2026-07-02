@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 CSV_FILES = {
-    "Pi3": "depth_pi3.csv",
     "VGGT": "depth_vggt.csv",
+    "π$^3$": "depth_pi3.csv"
 }
 
 OUT_DIR = "."
