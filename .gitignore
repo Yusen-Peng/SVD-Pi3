@@ -174,3 +174,4 @@ experiments/
 toy_*.sh
 download_*.sh
 prepare_*.py
+scannet_*.py

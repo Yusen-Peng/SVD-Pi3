@@ -429,15 +429,77 @@ def best_plotmode(traj):
 #         print(f"Saved trajectory to {filename.replace('.png','')}_traj_error.png")
 
 
+# def plot_trajectory(
+#     pred_traj, gt_traj=None, title="", filename="",
+#     align=True, correct_scale=True, verbose=False,
+#     legend_fontsize=16, legend_loc="best"
+# ):
+#     pred_traj = make_traj(pred_traj)
+
+#     if gt_traj is not None:
+#         gt_traj = make_traj(gt_traj)
+#         if pred_traj.timestamps.shape[0] == gt_traj.timestamps.shape[0]:
+#             pred_traj.timestamps = gt_traj.timestamps
+#         else:
+#             print("WARNING", pred_traj.timestamps.shape[0], gt_traj.timestamps.shape[0])
+
+#         gt_traj, pred_traj = sync.associate_trajectories(gt_traj, pred_traj)
+
+#         if align:
+#             pred_traj.align(gt_traj, correct_scale=correct_scale)
+
+#     plot_collection = plot.PlotCollection("PlotCol")
+#     fig = plt.figure(figsize=(8, 8))
+#     plot_mode = best_plotmode(gt_traj if (gt_traj is not None) else pred_traj)
+#     ax = plot.prepare_axis(fig, plot_mode)
+
+#     # ---- no title ----
+#     # ax.set_title(title)  # delete this line
+
+#     if gt_traj is not None:
+#         plot.traj(ax, plot_mode, gt_traj, "--", "gray", "Ground Truth")
+#     plot.traj(ax, plot_mode, pred_traj, "-", "blue", "Predicted")
+
+#     # ---- bigger legend ----
+#     leg = ax.legend(
+#         loc=legend_loc,
+#         fontsize=legend_fontsize,   # text size
+#         frameon=True,
+#         handlelength=3.5,           # longer line in legend
+#         handleheight=1.5,
+#         markerscale=2.0,
+#         borderpad=1.2
+#     )
+#     # ---- no axis name bullshit ----
+#     ax.set_xlabel("")
+#     ax.set_ylabel("")
+#     if hasattr(ax, "set_zlabel"):  # 3D axis
+#         ax.set_zlabel("")
+
+#     plot_collection.add_figure("traj_error", fig)
+#     plot_collection.export(filename, confirm_overwrite=False)
+#     plt.close(fig=fig)
+
+#     if verbose:
+#         print(f"Saved trajectory to {filename.replace('.png','')}_traj_error.png")
+
+
 def plot_trajectory(
     pred_traj, gt_traj=None, title="", filename="",
     align=True, correct_scale=True, verbose=False,
-    legend_fontsize=16, legend_loc="best"
+    legend_fontsize=18, legend_loc="lower left",
+    figsize=(7.2, 5.2),
+    dpi=300,
+    linewidth=3.2
 ):
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+
     pred_traj = make_traj(pred_traj)
 
     if gt_traj is not None:
         gt_traj = make_traj(gt_traj)
+
         if pred_traj.timestamps.shape[0] == gt_traj.timestamps.shape[0]:
             pred_traj.timestamps = gt_traj.timestamps
         else:
@@ -448,40 +510,154 @@ def plot_trajectory(
         if align:
             pred_traj.align(gt_traj, correct_scale=correct_scale)
 
+    # =========================
+    # CVPR / ICCV-ish style
+    # =========================
+    mpl.rcParams.update({
+        "font.family": "serif",
+        "font.serif": ["Times New Roman", "Times", "DejaVu Serif"],
+        "mathtext.fontset": "stix",
+
+        "axes.facecolor": "white",
+        "figure.facecolor": "white",
+        "savefig.facecolor": "white",
+
+        "axes.linewidth": 2.2,
+        "axes.edgecolor": "black",
+
+        "xtick.direction": "out",
+        "ytick.direction": "out",
+        "xtick.major.size": 7,
+        "ytick.major.size": 7,
+        "xtick.major.width": 2.0,
+        "ytick.major.width": 2.0,
+
+        "xtick.labelsize": 20,
+        "ytick.labelsize": 20,
+
+        "pdf.fonttype": 42,
+        "ps.fonttype": 42,
+    })
+
     plot_collection = plot.PlotCollection("PlotCol")
-    fig = plt.figure(figsize=(8, 8))
-    plot_mode = best_plotmode(gt_traj if (gt_traj is not None) else pred_traj)
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+
+    plot_mode = best_plotmode(gt_traj if gt_traj is not None else pred_traj)
     ax = plot.prepare_axis(fig, plot_mode)
 
-    # ---- no title ----
-    # ax.set_title(title)  # delete this line
+    # =========================
+    # Background / grid
+    # =========================
+    ax.set_facecolor("white")
+    ax.grid(
+        True,
+        color="#CFCFCF",
+        linestyle="-",
+        linewidth=1.1,
+        alpha=0.38
+    )
+    ax.set_axisbelow(True)
+
+    # =========================
+    # Colors from example vibe
+    # =========================
+    gt_color = "#2B2B2B"       # dark gray / black
+    pred_color = "#3B73A8"     # paper-ish blue
+    accent_color = "#E91E73"   # optional pink accent
 
     if gt_traj is not None:
-        plot.traj(ax, plot_mode, gt_traj, "--", "gray", "Ground Truth")
-    plot.traj(ax, plot_mode, pred_traj, "-", "blue", "Predicted")
+        plot.traj(
+            ax, plot_mode, gt_traj,
+            style="--",
+            color=gt_color,
+            label="Ground Truth",
+            alpha=0.90
+        )
 
-    # ---- bigger legend ----
-    leg = ax.legend(
-        loc=legend_loc,
-        fontsize=legend_fontsize,   # text size
-        frameon=True,
-        handlelength=3.5,           # longer line in legend
-        handleheight=1.5,
-        markerscale=2.0,
-        borderpad=1.2
+    plot.traj(
+        ax, plot_mode, pred_traj,
+        style="-",
+        color=pred_color,
+        label="Prediction",
+        alpha=1.0
     )
-    # ---- no axis name bullshit ----
+
+    # evo may override line styles, so force them here
+    for i, line in enumerate(ax.lines):
+        line.set_linewidth(linewidth)
+        line.set_solid_capstyle("round")
+        line.set_dash_capstyle("round")
+
+        if gt_traj is not None and i == 0:
+            line.set_color(gt_color)
+            line.set_linewidth(linewidth * 0.9)
+            line.set_linestyle((0, (6, 3)))
+            line.set_alpha(0.85)
+        else:
+            line.set_color(pred_color)
+            line.set_linewidth(linewidth)
+            line.set_linestyle("-")
+            line.set_alpha(1.0)
+
+    # =========================
+    # Axis cleanup
+    # =========================
     ax.set_xlabel("")
     ax.set_ylabel("")
-    if hasattr(ax, "set_zlabel"):  # 3D axis
+    if hasattr(ax, "set_zlabel"):
         ax.set_zlabel("")
+
+    ax.set_aspect("equal", adjustable="box")
+
+    # thick paper-style spines
+    for spine in ax.spines.values():
+        spine.set_linewidth(2.2)
+        spine.set_color("black")
+
+    # remove top/right like many CV plots
+    if not hasattr(ax, "zaxis"):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    ax.tick_params(
+        axis="both",
+        which="major",
+        labelsize=20,
+        width=2.0,
+        length=7,
+        pad=8
+    )
+
+    # =========================
+    # Legend
+    # =========================
+    leg = ax.legend(
+        loc=legend_loc,
+        fontsize=legend_fontsize,
+        frameon=True,
+        fancybox=False,
+        edgecolor="#D0D0D0",
+        facecolor="white",
+        framealpha=0.92,
+        handlelength=2.8,
+        borderpad=0.75,
+        labelspacing=0.55
+    )
+
+    for text in leg.get_texts():
+        text.set_fontfamily("serif")
+
+    for legline in leg.get_lines():
+        legline.set_linewidth(linewidth)
+
+    plt.tight_layout(pad=0.35)
 
     plot_collection.add_figure("traj_error", fig)
     plot_collection.export(filename, confirm_overwrite=False)
     plt.close(fig=fig)
 
     if verbose:
-        print(f"Saved trajectory to {filename.replace('.png','')}_traj_error.png")
+        print(f"Saved trajectory to {filename}")
 
 
 

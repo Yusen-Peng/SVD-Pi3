@@ -10,3 +10,9 @@ omegaconf
 accelerate
 rootutils
 hydra-core
+hydra-colorlog
+einops
+pandas
+matplotlib
+scipy
+evo

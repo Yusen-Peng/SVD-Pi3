@@ -258,7 +258,7 @@ def Pi3_get_calib_train_data(
     
     elif root.endswith('diverse'):
         print(f"😋😋😋we are collecting diverse scenes!!😋😋😋")
-        frames_sintel = collect_sintel_frames('/path/to/sintel', split, "final")
+        frames_sintel = collect_sintel_frames('experiments/sintel', split, "final")
         frames_scannet = collect_scannet_frames('/path/to/scannetv2')
         frames_bonn = collect_bonn_frames('/path/to/rgbd_bonn_dataset')
         frames_kitti = collect_kitti_frames('/path/to/kitti', camera='image_02')
@@ -314,11 +314,11 @@ def Pi3_get_calib_train_data(
 
     # save the dataset
     if root.endswith('sintel'):
-        torch.save(traindataset, f"/path/to/SVD_Pi3_cache/curation/sintel_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
+        torch.save(traindataset, f"experiments/SVD_Pi3_cache/curation/sintel_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
     elif 'scannet' in root.lower():
-        torch.save(traindataset, f"/path/to/SVD_Pi3_cache/curation/scannet_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
+        torch.save(traindataset, f"experiments/SVD_Pi3_cache/curation/scannet_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
     elif 'diverse' in root.lower():
-        torch.save(traindataset, f"/path/to/SVD_Pi3_cache/curation/diverse_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
+        torch.save(traindataset, f"experiments/SVD_Pi3_cache/curation/diverse_pi3_calib_nsamples{nsamples}_size{image_size}_seed{seed}.pt")
     else:
         raise NotImplementedError("This dataset is not supported yet.")
 

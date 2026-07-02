@@ -41,7 +41,7 @@ tum:
     ext: txt
 
 scannetv2:
-  root_path: /path/to/scannetv2
+  root_path: experiments/scannetv2
   ls_all_seqs: ${data.scannetv2.root_path}
   img:
     path: ${data.scannetv2.root_path}/{seq}/color_90

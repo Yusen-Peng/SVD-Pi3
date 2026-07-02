@@ -6,13 +6,13 @@ defaults:
 name: relpose-distance
 
 pi3:
-  #pretrained_model_name_or_path: /path/to/SVD_Pi3_cache/pi3_model.safetensors
+  #pretrained_model_name_or_path: experiments/Pi3/pi3_model.safetensors
 
-  #pretrained_model_name_or_path: /path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.2.safetensors
+  pretrained_model_name_or_path: experiments/SVD_Pi3_cache/Pi3_svd_baseline_0.2.safetensors
   #pretrained_model_name_or_path: /path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.3.safetensors
   #pretrained_model_name_or_path: /path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.4.safetensors
 
-  pretrained_model_name_or_path: /path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.4_BASE.safetensors
+  #pretrained_model_name_or_path: experiments/SVD_Pi3_cache/Pi3_svd_baseline_0.4_BASE.safetensors
   #pretrained_model_name_or_path: /path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.5_BASE.safetensors
   #pretrained_model_name_or_path: /path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.6_BASE.safetensors
 
@@ -50,8 +50,8 @@ pi3:
 
 eval_datasets:
   # - sintel
-  - tum
-  # - scannetv2
+  # - tum
+  - scannetv2
 
 no_crop: False
 load_img_size: 512
