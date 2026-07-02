@@ -167,7 +167,10 @@ second_half/*
 first_half_legacy/*
 second_half_legacy/*
 tmp/*
-*results/
 outputs*/
 data-adaptive-SVD/
 adaptive_cfg_embedding.json
+experiments/
+toy_*.sh
+download_*.sh
+prepare_*.py

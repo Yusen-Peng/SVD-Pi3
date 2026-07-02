@@ -9,4 +9,4 @@ safetensors
 omegaconf
 accelerate
 rootutils
-hydra
+hydra-core
