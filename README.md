@@ -7,11 +7,14 @@
 
 ## Environment
 
-Please follow the official π^3 repository to set up dependency/environement, prepare datasets, and change data/model path configurations accordingly.
+```bash
+conda create -n SVD3 python=3.11 -y
+conda activate SVD3
+python -m pip install -r requirements.txt
+```
 
-<!-- ```bash
-source ~/envs/compress/bin/activate
-``` -->
+Please follow the official π^3 repository to prepare datasets and change data/model path configurations accordingly in [Pi3_evaluation/configs](Pi3_evaluation/configs).
+
 
 ## SVD Baselines
 
@@ -66,7 +69,7 @@ We leverage the learned entropy thresholds to adaptively assign compression rati
 
 ## Evaluation
 
-We conduct evaluation on various types of tasks and datasets. Please configure the model path properly in yaml files at [Pi3_evaluation/configs/evaluation](Pi3_evaluation/configs/evaluation). For example, ***/path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.3.safetensors*** gives you a plain SVD baseline with 30% retention ratio; ***/path/to/SVD_Pi3_cache/Pi3_whitening_only_0.2.safetensors*** gives you a data whitening baseline with 20% retention ratio; ***/path/to/SVD_Pi3_cache/Pi3_whitening_only_0.4_BASE.safetensors*** gives you our SVD^3 method in which the base model has 40% retention ratio, the high retention being 30%, mid retention being 20%, and low retention being 10%. Please refer to the paper for how/why these numbers are assigned.
+We conduct evaluation on various types of tasks and datasets. Please configure the model path properly in yaml files at [Pi3_evaluation/configs/evaluation](Pi3_evaluation/configs/evaluation). For example, ***/path/to/SVD_Pi3_cache/Pi3_svd_baseline_0.3.safetensors*** gives you a plain SVD baseline with 30% retention ratio; ***/path/to/SVD_Pi3_cache/Pi3_whitening_only_0.2.safetensors*** gives you a data whitening baseline with 20% retention ratio; ***/path/to/SVD_Pi3_cache/Pi3_whitening_only_0.4_BASE.safetensors*** gives you our SVD^3 method in which the base model has 40% retention ratio, the high retention being 30%, mid retention being 20%, and low retention being 10%. Please refer to the paper for how/why these retention numbers are assigned.
 
 ### Monocular Depth Estimation
 
@@ -102,7 +105,7 @@ PYTHONNOUSERSITE=1 python point_cloud_visualization_7scenes.py # for 7scenes
 PYTHONNOUSERSITE=1 python point_cloud_visualization_nrgbd.py # for NRGBD
 ```
 
-## Latency/Efficiency eval
+## Latency/Efficiency
 
 [Pi3_evaluation/latency_measure.py](Pi3_evaluation/latency_measure.py) contains the code for FLOP analysis and measurement. How to run:
 
@@ -116,3 +119,6 @@ PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=1 python Pi3_evaluation/latency_measure.
 CUDA_VISIBLE_DEVICES=3 PYTHONNOUSERSITE=1 python Pi3_evaluation/param_measure.py
 ```
 
+## Sample Results
+
+![alt text](/aggregated_results/svd3_depth_tradeoff_side_by_side.png)
